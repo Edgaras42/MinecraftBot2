@@ -1,63 +1,47 @@
 const mineflayer = require('mineflayer');
 
-// Funkcija, kuri sukuria botą
-function startBot() {
-    const bot = mineflayer.createBot({
-        host: 'Chillkmrkarocia.aternos.me',  // 🔹 Serverio IP
-        port: 23210,                         // 🔹 Serverio prievartas
-        username: 'SERVAS24/7',               // 🔹 Bot vardas
-        version: false,                       // 🔹 Automatiškai nustato versiją
-        auth: 'offline'                       // 🔹 „Offline“ režimas (naudoti 'microsoft' jei premium)
-    });
+// Botas prisijungia prie serverio
+let bot;
 
-    bot.on('spawn', () => {
-        console.log('✅ Botas prisijungė prie serverio!');
-        bot.chat('Labas! Aš prisijungiau 🚀');
-    });
+function createBot() {
+  bot = mineflayer.createBot({
+    host: 'Chillkmrkarocia.aternos.me',  // Serverio IP
+    port: 23210,                        // Serverio prievartas
+    username: 'SERVAS24/7',              // Bot vardas
+    version: '1.21.4',                   // Minecraft versija
+    auth: 'offline'                      // Offline režimas
+  });
 
-    // 🔄 **Anti-AFK** – juda kas 20 sekundžių
-    setInterval(() => {
-        if (bot.entity) {
-            bot.setControlState('forward', true);
-            setTimeout(() => bot.setControlState('forward', false), 500);
-            bot.setControlState('jump', true);
-            setTimeout(() => bot.setControlState('jump', false), 100);
-        }
-    }, 20000);
+  // Kai botas prisijungia prie serverio
+  bot.on('spawn', () => {
+    console.log('Botas prisijungė prie serverio!');
+    sendMessagePeriodically(); // Pradeda siųsti žinutę kas 30 minučių
+  });
 
-    // 📩 **Klausosi žaidėjų žinučių**
-    bot.on('chat', (username, message) => {
-        if (username === bot.username) return; // Ignoruojame savo žinutes
+  // Kai botas atsijungia
+  bot.on('end', (reason) => {
+    console.log(`Botas atsijungė dėl priežasties: ${reason}`);
+    // Bandykite prisijungti vėl po 5 sekundžių
+    setTimeout(createBot, 5000);
+  });
 
-        if (message.toLowerCase() === 'atsijunk' || message.toLowerCase() === 'quit') {
-            bot.chat('Atsijungiu... 👋');
-            bot.end();
-        }
-
-        if (message.toLowerCase() === 'labas') {
-            bot.chat(`Labas, ${username}! 👋`);
-        }
-    });
-
-    // 📅 **Kas 30 minučių išsiųs žinutę**
-    setInterval(() => {
-        if (bot.entity) {
-            bot.chat('Kon jus balvoneliai');
-        }
-    }, 1800000); // 30 minučių
-
-    // 🔄 **Perkrauna botą, jei atsijungia**
-    bot.on('end', (reason) => {
-        console.log(`⚠️ Botas atsijungė: ${reason}`);
-        setTimeout(startBot, 5000); // Po 5 sek. bandome prisijungti iš naujo
-    });
-
-    bot.on('error', (err) => {
-        console.log(`❌ Klaida: ${err}`);
-        // Bandome dar kartą prisijungti po 5 sekundžių
-        setTimeout(startBot, 5000);
-    });
+  // Klaidos apdorojimas
+  bot.on('error', (err) => {
+    console.log('Klaida:', err);
+    // Bandykite prisijungti vėl po 5 sekundžių
+    setTimeout(createBot, 5000);
+  });
 }
 
-// 🔄 **Paleidžiame botą**
-startBot();
+// Periodiškai siunčia žinutę
+function sendMessagePeriodically() {
+  setInterval(() => {
+    if (bot && bot.chat) {
+      bot.chat('Kon jus balvoneliai');
+      console.log('Botas išsiuntė žinutę: "Kon jus balvoneliai"');
+    }
+  }, 1800000); // Kas 30 minučių (30 minutės * 60 sekundžių * 1000 milisekundės)
+}
+
+// Sukuriame pirmą botą
+createBot();
