@@ -44,4 +44,20 @@ function startBot() {
         if (bot.entity) {
             bot.chat('Kon jus balvoneliai');
         }
-    }, 1800000);
+    }, 1800000); // 30 minučių
+
+    // 🔄 **Perkrauna botą, jei atsijungia**
+    bot.on('end', (reason) => {
+        console.log(`⚠️ Botas atsijungė: ${reason}`);
+        setTimeout(startBot, 5000); // Po 5 sek. bandome prisijungti iš naujo
+    });
+
+    bot.on('error', (err) => {
+        console.log(`❌ Klaida: ${err}`);
+        // Bandome dar kartą prisijungti po 5 sekundžių
+        setTimeout(startBot, 5000);
+    });
+}
+
+// 🔄 **Paleidžiame botą**
+startBot();
