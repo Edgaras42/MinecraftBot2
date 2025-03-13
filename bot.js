@@ -12,7 +12,6 @@ function createBot() {
     auth: 'offline'                      // Offline režimas
   });
 
-  // Kai botas prisijungia prie serverio
   bot.on('spawn', () => {
     console.log('Botas prisijungė prie serverio!');
     sendMessagePeriodically(); // Pradeda siųsti žinutę kas 30 minučių
@@ -21,15 +20,15 @@ function createBot() {
   // Kai botas atsijungia
   bot.on('end', (reason) => {
     console.log(`Botas atsijungė dėl priežasties: ${reason}`);
-    // Bandykite prisijungti vėl po 60 sekundžių
-    setTimeout(createBot, 60000);
+    // Bandykite prisijungti vėl po 1 minutės
+    setTimeout(createBot, 60000); // 1 minutė
   });
 
   // Klaidos apdorojimas
   bot.on('error', (err) => {
     console.log('Klaida:', err);
-    // Bandykite prisijungti vėl po 60 sekundžių
-    setTimeout(createBot, 60000);
+    // Bandykite prisijungti vėl po 1 minutės
+    setTimeout(createBot, 60000); // 1 minutė
   });
 }
 
