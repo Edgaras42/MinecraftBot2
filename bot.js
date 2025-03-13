@@ -1,6 +1,5 @@
 const mineflayer = require('mineflayer');
 
-// Botas prisijungia prie serverio
 let bot;
 
 function createBot() {
@@ -17,18 +16,16 @@ function createBot() {
     sendMessagePeriodically(); // Pradeda siųsti žinutę kas 30 minučių
   });
 
-  // Kai botas atsijungia
   bot.on('end', (reason) => {
     console.log(`Botas atsijungė dėl priežasties: ${reason}`);
-    // Bandykite prisijungti vėl po 1 minutės
-    setTimeout(createBot, 60000); // 1 minutė
+    // Bandykite prisijungti vėl po 3 minutės
+    setTimeout(createBot, 180000); // 3 minutės
   });
 
-  // Klaidos apdorojimas
   bot.on('error', (err) => {
     console.log('Klaida:', err);
-    // Bandykite prisijungti vėl po 1 minutės
-    setTimeout(createBot, 60000); // 1 minutė
+    // Bandykite prisijungti vėl po 3 minutės
+    setTimeout(createBot, 180000); // 3 minutės
   });
 }
 
