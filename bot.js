@@ -21,15 +21,15 @@ function createBot() {
   // Kai botas atsijungia
   bot.on('end', (reason) => {
     console.log(`Botas atsijungė dėl priežasties: ${reason}`);
-    // Bandykite prisijungti vėl po 5 sekundžių
-    setTimeout(createBot, 5000);
+    // Bandykite prisijungti vėl po 60 sekundžių
+    setTimeout(createBot, 60000);
   });
 
   // Klaidos apdorojimas
   bot.on('error', (err) => {
     console.log('Klaida:', err);
-    // Bandykite prisijungti vėl po 5 sekundžių
-    setTimeout(createBot, 5000);
+    // Bandykite prisijungti vėl po 60 sekundžių
+    setTimeout(createBot, 60000);
   });
 }
 
