@@ -1,62 +1,60 @@
 const mineflayer = require('mineflayer');
 
-// Sukuriame botą ir prisijungiame prie serverio
-const bot = mineflayer.createBot({
-  host: 'Chillkmrkarocia.aternos.me',  // Serverio IP
-  port: 23210,                         // Serverio prievartas
-  username: 'SERVAS24/7',                 // Bot vardas
-  version: '1.21.4',                    // Minecraft versija (pakeisk jei reikia)
-  auth: 'offline'                       // Jei reikia Microsoft prisijungimo, naudok 'microsoft'
-});
+function startBot() {
+    const bot = mineflayer.createBot({
+        host: 'Chillkmrkarocia.aternos.me',  // 🔹 Serverio IP
+        port: 23210,                         // 🔹 Serverio prievartas
+        username: 'SERVAS24/7',               // 🔹 Bot vardas
+        version: false,                       // 🔹 Automatiškai nustato versiją
+        auth: 'offline'                       // 🔹 „Offline“ režimas (naudoti 'microsoft' jei premium)
+    });
 
-// Kai botas prisijungia
-bot.on('spawn', () => {
-  console.log('✅ Botas prisijungė prie serverio!');
-  bot.chat('KON JUS BALVONELIAI 🤖');
-});
+    bot.on('spawn', () => {
+        console.log('✅ Botas prisijungė prie serverio!');
+        bot.chat('Labas! Aš prisijungiau 🚀');
+    });
 
-// Žinutės siuntimas į chat'ą kas 5 minutes
-setInterval(() => {
-  bot.chat('Aš vis dar čia! 🔥');
-}, 300000); // 5 minutės (300 000 ms)
+    // 🔄 **Anti-AFK** – juda kas 20 sekundžių
+    setInterval(() => {
+        if (bot.entity) {
+            bot.setControlState('forward', true);
+            setTimeout(() => bot.setControlState('forward', false), 500);
+            bot.setControlState('jump', true);
+            setTimeout(() => bot.setControlState('jump', false), 100);
+        }
+    }, 20000);
 
-// Automatinis atsakymas į žaidėjų žinutes ir atsijungimo komanda
-bot.on('chat', (username, message) => {
-  if (username === bot.username) return; // Nereaguojame į savo paties žinutes
+    // 📩 **Klausosi žaidėjų žinučių**
+    bot.on('chat', (username, message) => {
+        if (username === bot.username) return; // Ignoruojame savo žinutes
 
-  console.log(`${username}: ${message}`);
+        if (message.toLowerCase() === 'atsijunk' || message.toLowerCase() === 'quit') {
+            bot.chat('Atsijungiu... 👋');
+            bot.end();
+        }
 
-  if (message.toLowerCase() === 'labas') {
-    bot.chat(`Labas, ${username}! Kaip sekasi? 😊`);
-  }
-  if (message.toLowerCase().includes('kaip tu')) {
-    bot.chat(`Aš esu botas ir jaučiuosi puikiai! 🤖`);
-  }
+        if (message.toLowerCase() === 'labas') {
+            bot.chat(`Labas, ${username}! 👋`);
+        }
+    });
 
-  // Jei kas nors parašo "atsijunk" arba "quit", botas atsijungs
-  if (message.toLowerCase() === 'atsijunk' || message.toLowerCase() === 'quit') {
-    bot.chat('Gerai, atsijungiu... 👋');
-    bot.end();
-  }
-});
+    // 📅 **Kas 30 minučių išsiųs žinutę**
+    setInterval(() => {
+        if (bot.entity) {
+            bot.chat('Kon jus balvoneliai');
+        }
+    }, 1800000); // 30 minučių
 
-// Anti-AFK sistema
-setInterval(() => {
-  if (bot.entity) {
-    bot.setControlState('forward', true); // Einame pirmyn
-    setTimeout(() => bot.setControlState('forward', false), 500); // Po 0.5s sustojame
+    // 🔄 **Perkrauna botą, jei atsijungia**
+    bot.on('end', (reason) => {
+        console.log(`⚠️ Botas atsijungė: ${reason}`);
+        setTimeout(startBot, 5000); // Po 5 sek. bandome prisijungti iš naujo
+    });
 
-    bot.setControlState('jump', true); // Šokame
-    setTimeout(() => bot.setControlState('jump', false), 100); // Po 100ms sustojame
-  }
-}, 20000); // Kartojame kas 20 sekundžių
+    bot.on('error', (err) => {
+        console.log(`❌ Klaida: ${err}`);
+    });
+}
 
-// Kai botas atsijungia
-bot.on('end', (reason) => {
-  console.log(`❌ Botas atsijungė: ${reason}`);
-});
-
-// Jei įvyksta klaida
-bot.on('error', (err) => {
-  console.log('⚠️ Klaida:', err);
-});
+// 🔄 **Paleidžiame botą**
+startBot();
