@@ -4,7 +4,7 @@ const mineflayer = require('mineflayer');
 const bot = mineflayer.createBot({
   host: 'Chillkmrkarocia.aternos.me',  // Serverio IP
   port: 23210,                         // Serverio prievartas
-  username: 'BotName',                 // Bot vardas
+  username: 'SERVAS24/7',                 // Bot vardas
   version: '1.21.4',                    // Minecraft versija (pakeisk jei reikia)
   auth: 'offline'                       // Jei reikia Microsoft prisijungimo, naudok 'microsoft'
 });
@@ -12,7 +12,7 @@ const bot = mineflayer.createBot({
 // Kai botas prisijungia
 bot.on('spawn', () => {
   console.log('✅ Botas prisijungė prie serverio!');
-  bot.chat('Sveiki! Aš esu automatinis Minecraft botas 🤖');
+  bot.chat('KON JUS BALVONELIAI 🤖');
 });
 
 // Žinutės siuntimas į chat'ą kas 5 minutes
